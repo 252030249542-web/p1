@@ -1,11 +1,327 @@
 <!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
-        <title>Git Program1 </title>
-    </head>
-        <body>
-            <h1>Welcome to Git and Github</h1>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="theme-color" content="#f4f2eb">
+        <title>Git Field Notes</title>
+        <style>
+            :root {
+                color-scheme: light;
+                --paper: #f4f2eb;
+                --ink: #202a26;
+                --muted: #68736d;
+                --line: #d9ddd5;
+                --green: #c8f169;
+                --coral: #e9755b;
+                --panel: #202a26;
+            }
 
-        </body>
+            * { box-sizing: border-box; }
+
+            body {
+                min-height: 100vh;
+                margin: 0;
+                background: var(--paper);
+                color: var(--ink);
+                font-family: "Trebuchet MS", sans-serif;
+            }
+
+            .page {
+                width: min(1040px, calc(100% - 48px));
+                margin: 0 auto;
+            }
+
+            header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 28px 0;
+                border-bottom: 1px solid var(--line);
+            }
+
+            .wordmark, .edition, .eyebrow, .step-number, .command-label {
+                font-family: Consolas, monospace;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+            }
+
+            .wordmark { font-size: 13px; font-weight: 700; }
+            .edition { color: var(--muted); font-size: 11px; }
+
+            main {
+                display: grid;
+                grid-template-columns: 0.9fr 1.1fr;
+                gap: clamp(40px, 8vw, 112px);
+                align-items: center;
+                padding: clamp(64px, 12vh, 120px) 0 96px;
+            }
+
+            .eyebrow {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                color: var(--muted);
+                font-size: 11px;
+            }
+
+            .eyebrow::before {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: var(--coral);
+                content: "";
+            }
+
+            h1 {
+                max-width: 470px;
+                margin: 24px 0 18px;
+                font-family: Georgia, serif;
+                font-size: clamp(44px, 6vw, 72px);
+                font-weight: 400;
+                line-height: 0.98;
+            }
+
+            h1 span { color: #617b49; font-style: italic; }
+
+            .intro {
+                max-width: 390px;
+                color: var(--muted);
+                font-size: 16px;
+                line-height: 1.7;
+            }
+
+            .steps {
+                display: grid;
+                gap: 0;
+                margin-top: 38px;
+                border-top: 1px solid var(--line);
+            }
+
+            .step {
+                display: grid;
+                grid-template-columns: 42px 1fr 20px;
+                gap: 12px;
+                align-items: center;
+                width: 100%;
+                padding: 15px 4px;
+                border: 0;
+                border-bottom: 1px solid var(--line);
+                background: transparent;
+                color: var(--ink);
+                cursor: pointer;
+                text-align: left;
+            }
+
+            .step-number { color: var(--muted); font-size: 11px; }
+            .step-name { font-size: 14px; font-weight: 700; }
+            .step-arrow { color: var(--muted); text-align: right; }
+
+            .step[aria-pressed="true"] .step-number,
+            .step[aria-pressed="true"] .step-arrow { color: #617b49; }
+            .step[aria-pressed="true"] .step-name { text-decoration: underline; text-decoration-color: var(--green); text-decoration-thickness: 3px; text-underline-offset: 4px; }
+            .step:focus-visible, .copy-button:focus-visible { outline: 3px solid var(--coral); outline-offset: 3px; }
+
+            .terminal {
+                overflow: hidden;
+                border: 1px solid #38433d;
+                border-radius: 6px;
+                background: var(--panel);
+                box-shadow: 12px 12px 0 #e1e4da;
+                animation: arrive 500ms ease-out both;
+            }
+
+            .terminal-top {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px 18px;
+                border-bottom: 1px solid #39443e;
+                color: #c4cdc6;
+                font-family: Consolas, monospace;
+                font-size: 11px;
+            }
+
+            .dots { display: flex; gap: 5px; }
+            .dots i { width: 7px; height: 7px; border-radius: 50%; background: #68736d; }
+            .dots i:first-child { background: var(--coral); }
+            .terminal-content { min-height: 286px; padding: 28px 24px 22px; }
+            .command-label { color: #aab5ad; font-size: 10px; }
+
+            .command {
+                display: block;
+                min-height: 88px;
+                margin: 19px 0 16px;
+                color: var(--green);
+                font-family: Consolas, monospace;
+                font-size: 15px;
+                line-height: 1.8;
+                overflow-wrap: anywhere;
+                white-space: pre-wrap;
+            }
+
+            .description {
+                min-height: 48px;
+                margin: 0;
+                color: #c4cdc6;
+                font-size: 13px;
+                line-height: 1.6;
+            }
+
+            .terminal-bottom {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 16px;
+                padding: 16px 18px;
+                border-top: 1px solid #39443e;
+            }
+
+            .copy-button {
+                padding: 10px 14px;
+                border: 0;
+                border-radius: 3px;
+                background: var(--green);
+                color: var(--ink);
+                cursor: pointer;
+                font-weight: 700;
+            }
+
+            .copy-button:hover { background: #d8ff88; }
+            .copy-status { color: #c4cdc6; font-size: 12px; }
+
+            footer {
+                display: flex;
+                justify-content: space-between;
+                padding: 20px 0;
+                border-top: 1px solid var(--line);
+                color: var(--muted);
+                font-family: Consolas, monospace;
+                font-size: 10px;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+            }
+
+            @keyframes arrive {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+
+            @media (max-width: 720px) {
+                .page { width: min(100% - 36px, 520px); }
+                header { padding: 20px 0; }
+                main { grid-template-columns: 1fr; gap: 36px; padding: 58px 0 64px; }
+                h1 { max-width: 390px; }
+                .steps { margin-top: 26px; }
+                .terminal-content { min-height: 260px; }
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                *, *::before, *::after { animation-duration: 0.01ms !important; scroll-behavior: auto !important; }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="page">
+            <header>
+                <div class="wordmark">Git Field Notes</div>
+                <div class="edition">A tiny working guide / 001</div>
+            </header>
+
+            <main>
+                <section aria-labelledby="page-title">
+                    <div class="eyebrow">Your first trip to GitHub</div>
+                    <h1 id="page-title">From first file to <span>first push.</span></h1>
+                    <p class="intro">A short, practical path from a folder on your computer to a project shared on GitHub. Choose a step to see its commands.</p>
+
+                    <div class="steps" aria-label="Git workflow steps">
+                        <button class="step" type="button" data-step="0" aria-pressed="true">
+                            <span class="step-number">01</span><span class="step-name">Start a repository</span><span class="step-arrow" aria-hidden="true">↗</span>
+                        </button>
+                        <button class="step" type="button" data-step="1" aria-pressed="false">
+                            <span class="step-number">02</span><span class="step-name">Save your work</span><span class="step-arrow" aria-hidden="true">↗</span>
+                        </button>
+                        <button class="step" type="button" data-step="2" aria-pressed="false">
+                            <span class="step-number">03</span><span class="step-name">Connect GitHub</span><span class="step-arrow" aria-hidden="true">↗</span>
+                        </button>
+                        <button class="step" type="button" data-step="3" aria-pressed="false">
+                            <span class="step-number">04</span><span class="step-name">Send it up</span><span class="step-arrow" aria-hidden="true">↗</span>
+                        </button>
+                    </div>
+                </section>
+
+                <section class="terminal" aria-label="Selected Git command">
+                    <div class="terminal-top">
+                        <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                        <span>Terminal / git</span>
+                    </div>
+                    <div class="terminal-content" aria-live="polite">
+                        <div class="command-label" id="command-title">01 / Start a repository</div>
+                        <code class="command" id="command">git init</code>
+                        <p class="description" id="description">Run this inside your project folder to start tracking it with Git.</p>
+                    </div>
+                    <div class="terminal-bottom">
+                        <span class="copy-status" id="copy-status" role="status">Ready when you are.</span>
+                        <button class="copy-button" id="copy-button" type="button">Copy command</button>
+                    </div>
+                </section>
+            </main>
+
+            <footer><span>One step at a time</span><span>git status is always a good start</span></footer>
+        </div>
+
+        <script>
+            const steps = [
+                {
+                    title: "01 / Start a repository",
+                    command: "git init",
+                    description: "Run this inside your project folder to start tracking it with Git."
+                },
+                {
+                    title: "02 / Save your work",
+                    command: "git add .\ngit commit -m \"first commit\"",
+                    description: "Stage your files, then save a snapshot with a short message."
+                },
+                {
+                    title: "03 / Connect GitHub",
+                    command: "git remote add origin https://github.com/USERNAME/REPOSITORY.git\ngit branch -M main",
+                    description: "Create an empty GitHub repository first, then replace the URL with its address."
+                },
+                {
+                    title: "04 / Send it up",
+                    command: "git push -u origin main",
+                    description: "Upload your commit. After the first push, git push is usually enough."
+                }
+            ];
+
+            const commandElement = document.querySelector("#command");
+            const titleElement = document.querySelector("#command-title");
+            const descriptionElement = document.querySelector("#description");
+            const statusElement = document.querySelector("#copy-status");
+
+            document.querySelectorAll(".step").forEach((button) => {
+                button.addEventListener("click", () => {
+                    const selectedStep = steps[Number(button.dataset.step)];
+                    document.querySelectorAll(".step").forEach((stepButton) => {
+                        stepButton.setAttribute("aria-pressed", String(stepButton === button));
+                    });
+                    titleElement.textContent = selectedStep.title;
+                    commandElement.textContent = selectedStep.command;
+                    descriptionElement.textContent = selectedStep.description;
+                    statusElement.textContent = "Ready when you are.";
+                });
+            });
+
+            document.querySelector("#copy-button").addEventListener("click", async () => {
+                try {
+                    await navigator.clipboard.writeText(commandElement.textContent);
+                    statusElement.textContent = "Copied to clipboard.";
+                } catch {
+                    statusElement.textContent = "Clipboard unavailable. Select the command to copy it.";
+                }
+            });
+        </script>
+    </body>
 </html>
 
